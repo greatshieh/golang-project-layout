@@ -1,0 +1,116 @@
+# Global Configuration
+# jwt configuration
+jwt:
+  signing-key: qmPlus
+  expires-time: 7d
+  buffer-time: 1d
+  issuer: qmPlus
+
+# zap logger configuration
+zap:
+  level: info
+  format: console
+  prefix: "[zap-prompt]"
+  director: log
+  show-line: true
+  encode-level: LowercaseColorLevelEncoder
+  stacktrace-key: stacktrace
+  log-in-console: true
+
+# redis configuration
+redis:
+  db: 0
+  addr: 127.0.0.1:6379
+  password: ""
+
+# email configuration
+email:
+  port: 465
+  to: xxx@foxmail.com
+  from: xxx@qq.com
+  host: smtp.qq.com
+  is-ssl: true
+  secret: xxx
+  nickname: test
+
+# system configuration
+system:
+  env: public # Change to "develop" to skip authentication for development mode
+  addr: 8888
+  db-type: mysql
+  use-redis: false # 使用redis
+  use-multipoint: false
+  #  路由全局前缀
+  router-prefix: ""
+  # 需要注册的系统路由, 用“,”隔开
+  system-router: "jwt,user"
+  # 需要注册的全局中间件, 用","隔开
+  middleware: "recovery,access_log"
+  # 需要注册的插件, 用","隔开
+  plugins: "email"
+
+# 限流器
+ratelimiter:
+  # 限流器类型, router - 路由限流器, ip - IP限流器
+  - type: "router"
+    rules:
+      # 当类型为router时, 定义需要限流的路径; 当类型为ip时, 可以为空
+      - key: "/article"
+        # 限流器的间隔时间, 即过期时间
+        interval: 60
+        # 限流器容量
+        capacity: 2
+        # 当类型为router时, 为每interval时间往bucket中放入的令牌数
+        quantum: 2
+
+# mysql connect configuration
+mysql:
+  path: ""
+  port: "3306"
+  config: "charset=utf8mb4&parseTime=True&loc=Local"
+  db-name: ""
+  username: ""
+  password: ""
+  max-idle-conns: 10
+  max-open-conns: 100
+  log-mode: "info"
+  log-zap: false
+
+# pgsql connect configuration
+# 未初始化之前请勿手动修改数据库信息！！！如果一定要手动初始化请看（https://gin-vue-admin.com/docs/first_master）
+pgsql:
+  path: ""
+  port: ""
+  config: ""
+  db-name: ""
+  username: ""
+  password: ""
+  max-idle-conns: 10
+  max-open-conns: 100
+  log-mode: ""
+  log-zap: false
+db-list:
+  - disable: true # 是否禁用
+    type: "" # 数据库的类型,目前支持mysql、pgsql
+    alias-name: "" # 数据库的名称,注意: alias-name 需要在db-list中唯一
+    path: ""
+    port: ""
+    config: ""
+    db-name: ""
+    username: ""
+    password: ""
+    max-idle-conns: 10
+    max-open-conns: 100
+    log-mode: ""
+    log-zap: false
+
+cors:
+  mode: allow-all # 放行模式: allow-all, 放行全部; whitelist, 白名单模式, 来自白名单内域名的请求添加 cors 头; strict-whitelist 严格白名单模式, 白名单外的请求一律拒绝
+  whitelist:
+    - allow-origin: example1.com
+      allow-headers: Content-Type,AccessToken,X-CSRF-Token, Authorization, Token,X-Token,X-User-Id
+      allow-methods: POST, GET
+      expose-headers: Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type
+
+github:
+  token: xxx

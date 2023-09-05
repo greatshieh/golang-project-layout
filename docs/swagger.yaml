@@ -1,0 +1,650 @@
+definitions:
+  golang_project_layout_pkg_model_common_request.GetById:
+    properties:
+      id:
+        description: 主键ID
+        type: integer
+    type: object
+  golang_project_layout_pkg_model_common_request.PageInfo:
+    properties:
+      keyword:
+        description: 关键字
+        type: string
+      page:
+        description: 页码
+        type: integer
+      pageSize:
+        description: 每页大小
+        type: integer
+    type: object
+  golang_project_layout_pkg_model_common_response.PageResult:
+    properties:
+      list: {}
+      page:
+        type: integer
+      pageSize:
+        type: integer
+      total:
+        type: integer
+    type: object
+  golang_project_layout_pkg_model_common_response.Response:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
+  golang_project_layout_pkg_model_system.SysAuthority:
+    properties:
+      authorityId:
+        description: 角色ID
+        type: integer
+      authorityName:
+        description: 角色名
+        type: string
+      children:
+        items:
+          $ref: '#/definitions/golang_project_layout_pkg_model_system.SysAuthority'
+        type: array
+      createdAt:
+        description: 创建时间
+        type: string
+      dataAuthorityId:
+        items:
+          $ref: '#/definitions/golang_project_layout_pkg_model_system.SysAuthority'
+        type: array
+      deletedAt:
+        type: string
+      parentId:
+        description: 父角色ID
+        type: integer
+      updatedAt:
+        description: 更新时间
+        type: string
+    type: object
+  golang_project_layout_pkg_model_system.SysUser:
+    properties:
+      authorities:
+        items:
+          $ref: '#/definitions/golang_project_layout_pkg_model_system.SysAuthority'
+        type: array
+      authority:
+        $ref: '#/definitions/golang_project_layout_pkg_model_system.SysAuthority'
+      authorityId:
+        type: integer
+      avatar:
+        type: string
+      createdAt:
+        description: 创建时间
+        type: string
+      email:
+        type: string
+      id:
+        description: 主键ID
+        type: integer
+      isActive:
+        type: boolean
+      isStaff:
+        description: 是否可以访问admin站点
+        type: boolean
+      isSuperuser:
+        type: boolean
+      lastLogin:
+        type: string
+      nickName:
+        type: string
+      phone:
+        type: string
+      updatedAt:
+        description: 更新时间
+        type: string
+      userName:
+        type: string
+      uuid:
+        type: string
+    type: object
+  golang_project_layout_pkg_model_system_request.CasbinInReceive:
+    properties:
+      authorityId:
+        description: 权限id
+        type: integer
+      casbinInfos:
+        items:
+          $ref: '#/definitions/golang_project_layout_pkg_model_system_request.CasbinInfo'
+        type: array
+    type: object
+  golang_project_layout_pkg_model_system_request.CasbinInfo:
+    properties:
+      method:
+        description: 方法
+        type: string
+      path:
+        description: 路径
+        type: string
+    type: object
+  golang_project_layout_pkg_model_system_request.ChangePasswordReq:
+    properties:
+      newPassword:
+        description: 新密码
+        type: string
+      password:
+        description: 密码
+        type: string
+    type: object
+  golang_project_layout_pkg_model_system_request.Login:
+    properties:
+      captcha:
+        description: 验证码
+        type: string
+      captchaId:
+        description: 验证码ID
+        type: string
+      password:
+        description: 密码
+        type: string
+      username:
+        description: 用户名
+        type: string
+    type: object
+  golang_project_layout_pkg_model_system_request.Register:
+    properties:
+      authorityId:
+        example: int 角色id
+        type: string
+      authorityIds:
+        example: '[]uint 角色id'
+        type: string
+      avatar:
+        example: 头像链接
+        type: string
+      email:
+        example: 电子邮箱
+        type: string
+      isActive:
+        example: bool 是否启用
+        type: string
+      nickName:
+        example: 昵称
+        type: string
+      passWord:
+        example: 密码
+        type: string
+      phone:
+        example: 电话号码
+        type: string
+      userName:
+        example: 用户名
+        type: string
+    type: object
+  golang_project_layout_pkg_model_system_request.SetUserAuth:
+    properties:
+      authorityId:
+        description: 角色ID
+        type: integer
+    type: object
+  golang_project_layout_pkg_model_system_request.SetUserAuthorities:
+    properties:
+      authorityIds:
+        description: 角色ID
+        items:
+          type: integer
+        type: array
+      id:
+        type: integer
+    type: object
+  golang_project_layout_pkg_model_system_response.LoginResponse:
+    properties:
+      expiresAt:
+        type: integer
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/golang_project_layout_pkg_model_system.SysUser'
+    type: object
+  golang_project_layout_pkg_model_system_response.PolicyPathResponse:
+    properties:
+      paths:
+        items:
+          $ref: '#/definitions/golang_project_layout_pkg_model_system_request.CasbinInfo'
+        type: array
+    type: object
+  golang_project_layout_pkg_model_system_response.SysUserResponse:
+    properties:
+      user:
+        $ref: '#/definitions/golang_project_layout_pkg_model_system.SysUser'
+    type: object
+  pkg_plugin_email.EmailResponse:
+    properties:
+      body:
+        description: 邮件内容
+        type: string
+      subject:
+        description: 邮件标题
+        type: string
+      to:
+        description: 邮件发送给谁
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /base/login:
+    post:
+      parameters:
+      - description: 用户名, 密码, 验证码
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/golang_project_layout_pkg_model_system_request.Login'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 返回包括用户信息,token,过期时间
+          schema:
+            allOf:
+            - $ref: '#/definitions/golang_project_layout_pkg_model_common_response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/golang_project_layout_pkg_model_system_response.LoginResponse'
+                msg:
+                  type: string
+              type: object
+      summary: 用户登录
+      tags:
+      - Base
+  /casbin/UpdateCasbin:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 权限id, 权限模型列表
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/golang_project_layout_pkg_model_system_request.CasbinInReceive'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新角色api权限
+          schema:
+            allOf:
+            - $ref: '#/definitions/golang_project_layout_pkg_model_common_response.Response'
+            - properties:
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 更新角色api权限
+      tags:
+      - Casbin
+  /casbin/getPolicyPathByAuthorityId:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 权限id, 权限模型列表
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/golang_project_layout_pkg_model_system_request.CasbinInReceive'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取权限列表,返回包括casbin详情列表
+          schema:
+            allOf:
+            - $ref: '#/definitions/golang_project_layout_pkg_model_common_response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/golang_project_layout_pkg_model_system_response.PolicyPathResponse'
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 获取权限列表
+      tags:
+      - Casbin
+  /email/emailTest:
+    post:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"发送成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 发送测试邮件
+      tags:
+      - System
+  /email/sendEmail:
+    post:
+      parameters:
+      - description: 发送邮件必须的参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/pkg_plugin_email.EmailResponse'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"发送成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 发送邮件
+      tags:
+      - System
+  /jwt/jsonInBlacklist:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: jwt加入黑名单
+          schema:
+            allOf:
+            - $ref: '#/definitions/golang_project_layout_pkg_model_common_response.Response'
+            - properties:
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: jwt加入黑名单
+      tags:
+      - Jwt
+  /user/SetSelfInfo:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID, 用户名, 昵称, 头像链接
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/golang_project_layout_pkg_model_system.SysUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 设置用户信息
+          schema:
+            allOf:
+            - $ref: '#/definitions/golang_project_layout_pkg_model_common_response.Response'
+            - properties:
+                data:
+                  additionalProperties: true
+                  type: object
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 设置用户信息
+      tags:
+      - SysUser
+  /user/admin_register:
+    post:
+      parameters:
+      - description: 用户名, 昵称, 密码, 角色ID
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/golang_project_layout_pkg_model_system_request.Register'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 用户注册账号,返回包括用户信息
+          schema:
+            allOf:
+            - $ref: '#/definitions/golang_project_layout_pkg_model_common_response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/golang_project_layout_pkg_model_system_response.SysUserResponse'
+                msg:
+                  type: string
+              type: object
+      summary: 用户注册账号
+      tags:
+      - SysUser
+  /user/changePassword:
+    post:
+      parameters:
+      - description: 用户名, 原密码, 新密码
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/golang_project_layout_pkg_model_system_request.ChangePasswordReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 用户修改密码
+          schema:
+            allOf:
+            - $ref: '#/definitions/golang_project_layout_pkg_model_common_response.Response'
+            - properties:
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 用户修改密码
+      tags:
+      - SysUser
+  /user/deleteUser:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用户ID
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/golang_project_layout_pkg_model_common_request.GetById'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 删除用户
+          schema:
+            allOf:
+            - $ref: '#/definitions/golang_project_layout_pkg_model_common_response.Response'
+            - properties:
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 删除用户
+      tags:
+      - SysUser
+  /user/getUserInfo:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取用户信息
+          schema:
+            allOf:
+            - $ref: '#/definitions/golang_project_layout_pkg_model_common_response.Response'
+            - properties:
+                data:
+                  additionalProperties: true
+                  type: object
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 获取用户信息
+      tags:
+      - SysUser
+  /user/getUserList:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 页码, 每页大小
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/golang_project_layout_pkg_model_common_request.PageInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 分页获取用户列表,返回包括列表,总数,页码,每页数量
+          schema:
+            allOf:
+            - $ref: '#/definitions/golang_project_layout_pkg_model_common_response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/golang_project_layout_pkg_model_common_response.PageResult'
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 分页获取用户列表
+      tags:
+      - SysUser
+  /user/resetPassword:
+    post:
+      parameters:
+      - description: ID
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/golang_project_layout_pkg_model_system.SysUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 重置用户密码
+          schema:
+            allOf:
+            - $ref: '#/definitions/golang_project_layout_pkg_model_common_response.Response'
+            - properties:
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 重置用户密码
+      tags:
+      - SysUser
+  /user/setUserAuthorities:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用户UUID, 角色ID
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/golang_project_layout_pkg_model_system_request.SetUserAuthorities'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 设置用户权限
+          schema:
+            allOf:
+            - $ref: '#/definitions/golang_project_layout_pkg_model_common_response.Response'
+            - properties:
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 设置用户权限
+      tags:
+      - SysUser
+  /user/setUserAuthority:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用户UUID, 角色ID
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/golang_project_layout_pkg_model_system_request.SetUserAuth'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 设置用户权限
+          schema:
+            allOf:
+            - $ref: '#/definitions/golang_project_layout_pkg_model_common_response.Response'
+            - properties:
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 更改用户权限
+      tags:
+      - SysUser
+  /user/setUserInfo:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID, 用户名, 昵称, 头像链接
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/golang_project_layout_pkg_model_system.SysUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 设置用户信息
+          schema:
+            allOf:
+            - $ref: '#/definitions/golang_project_layout_pkg_model_common_response.Response'
+            - properties:
+                data:
+                  additionalProperties: true
+                  type: object
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 设置用户信息
+      tags:
+      - SysUser
+swagger: "2.0"

@@ -25,6 +25,10 @@ type GenericServer struct {
 }
 
 func NewServer(name string) *GenericServer {
+	if global.GVA_CONFIG.System.Env == "public" {
+		gin.SetMode(gin.ReleaseMode) //DebugMode ReleaseMode TestMode
+	}
+
 	genericServer := &GenericServer{Name: name, Engine: gin.New()}
 
 	if global.GVA_CONFIG.System.UseMultipoint || global.GVA_CONFIG.System.UseRedis {
